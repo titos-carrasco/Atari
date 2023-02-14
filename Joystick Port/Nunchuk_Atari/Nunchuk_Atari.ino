@@ -1,11 +1,11 @@
 #include <NintendoExtensionCtrl.h>
 Nunchuk nchuk;
 
-#define trigger       2
-#define button_up     3
-#define button_down   4
-#define button_left   5
-#define button_right  6
+#define button_up     2
+#define button_down   3
+#define button_left   4
+#define button_right  5
+#define trigger       6
 
 void setup() {
     Serial.begin(115200);
