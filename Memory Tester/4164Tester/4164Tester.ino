@@ -1,3 +1,5 @@
+/*
+
 #define M_D     A5
 #define M_WE    A4
 #define M_RAS   A3
@@ -11,6 +13,23 @@
 #define M_A6    4
 #define M_Q     3
 #define M_CAS   2
+ */
+ 
+#define M_D     A1
+#define M_Q     8
+#define M_CAS   9
+#define M_RAS   A3
+#define M_WE    A2
+
+#define M_A0    A4
+#define M_A1    2
+#define M_A2    A5
+#define M_A3    6
+#define M_A4    5
+#define M_A5    4
+#define M_A6    7
+#define M_A7    3
+
 
 char msg[40];
 
