@@ -5,145 +5,131 @@
 
     .SEGMENT "CODE"
 
-Reset:
-    ; limpia la RAM y los registros TIA
-    ldx #0
-    lda #0
-Limpiar:
-    sta 0,x
-    inx
-    bne Limpiar
+    ; ----------------------------------------------------------------------
+    ; A2600 Rainbow
+    ; ----------------------------------------------------------------------
+.proc Main
+    jsr Init
 
+GameLoop:
+    jsr VerticalSync
+    jsr VerticalBlank
+    jsr HorizontalBlank
+    jsr OverScan
+
+    jmp GameLoop
+.endproc
+
+    ; ----------------------------------------------------------------------
+    ; Inicializamos el programa
+    ; ----------------------------------------------------------------------
+.proc Init
+    ; establecemos los colores
     lda #$30
     sta Color1
     sta Color2  
 
-    ; comenzamos con el beam apagado y nos sincronizamos al inicio del frame
-    lda #%01000010
-    sta VBLANK
+    rts
+.endproc
+
+    ; ----------------------------------------------------------------------
+    ; VERTICAL SYNC: 3 lineas scan
+    ; ----------------------------------------------------------------------
+.proc VerticalSync
+    ; iniciamos la sincronizacion vertical (inicio del frame)
     lda #2
     sta VSYNC
 
-FrameLoop:
-    ; ----------------------------------------------------------------------
-    ; sincronizacion de video (3 lineas)
-    ; cada instruccion detiene la cpu hasta el inicio de la siguiente linea
-    ; ----------------------------------------------------------------------
+    ; debemos sincronizarnos con 3 lineas scan
     sta WSYNC
     sta WSYNC
     sta WSYNC
 
-    ; indica al TV que comenzaremos a dibujar
+    ; finalizamos la sincronizacion vertical
     lda #0
     sta VSYNC
 
-    ; encendemos el beam
-    lda #%01000000
-    sta VBLANK
+    rts
+.endproc
 
     ; ----------------------------------------------------------------------
-    ; vertical blank (37 lineas)
-    ; podemos mostrar algo consumiendo las 37 lineas
+    ; VERTICAL BLANK: 37 lineas scan (37*76 = 2812 ciclos de CPU, 2812/64 = 43.9375)
     ; ----------------------------------------------------------------------
+.proc VerticalBlank
+    ; preparamos el timer que nos avisara cuando se nos agote el tiempo
+    lda #43
+    sta TIM64T
 
-    ; mostramos algo
-    jsr ShowNumbers
+    ; aqui se puede procesar
+
+    ; nos sincronizamos a la ultima linea scan del vertical blank
+loop:
+    sta WSYNC
+    lda INTIM
+    bne loop
+    sta WSYNC
+
+    rts
+.endproc
 
     ; ----------------------------------------------------------------------
-    ; contenido del frame  (192 lineas)
+    ; HORIZONTAL BLANK: 192 lineas scan
     ; ----------------------------------------------------------------------
-
+.proc HorizontalBlank
+    ; coloreamos el arcoriris
     ldx #192
 loop:
     lda Color2
     sta COLUBK
     inc Color2
 
-    ; esperamos la siguiente scanline
+    ; esperamos la siguiente linea scan
     dex 
     sta WSYNC
     bne loop
 
-    ; ----------------------------------------------------------------------
-    ; overscan (30 lineas)
-    ; ----------------------------------------------------------------------
+    rts
+.endproc
 
-    ; apagamos el beam
-    lda #%01000010
-    sta VBLANK
+    ; ----------------------------------------------------------------------
+    ; OVERSCAN: 30 lineas scan (30*76 = 2280 ciclos de CPU, 2280/64 = 35.625)
+    ; ----------------------------------------------------------------------
+.proc OverScan
+    ; dejamos en negro el resto de las lineas scan
+    lda #0
+    sta COLUBK
 
-    ; aqui podemos procesar cuidando el tiempo que disponem
+    ; preparamos el timer que nos avisara cuando se nos agote el tiempo
+    lda #36
+    sta TIM64T
 
     ; rotamos los colores
     inc Color1
     lda Color1
     sta Color2
 
-    ; ----------------------------------------------------------------------
-    ; indicamos al TV que termine el frame e inicie el siguiente
-    ; ----------------------------------------------------------------------
-    lda #2
-    sta VSYNC
-
-    jmp FrameLoop
-
-.proc ShowNumbers
-    ; debemos utilizar 37 scanlines
-
-    ; seteamos el color de fondo
-    lda #$00
-    sta COLUBK
-
-    ; usaremos el color blanco para el playfield
-    lda #$0F
-    sta COLUPF
-
-    ; en Stella no vemos las primeras 23 lineas del vertical blank
-    ldx #23
-loop:
+OverscanLoop:
     sta WSYNC
-    dex
-    bne loop
-
-    ; utilizaremos el playfield para ocupar las 14 lineas que nos quedan
-    lda #%00000111
-    sta PF1
-    sta WSYNC
-    sta WSYNC
-
-    lda #%00000101
-    sta PF1
-    sta WSYNC
-    sta WSYNC
-    sta WSYNC
-    sta WSYNC
-    sta WSYNC
-    sta WSYNC
-    sta WSYNC
-    sta WSYNC
-    sta WSYNC
-    sta WSYNC
-
-    lda #%00000111
-    sta PF1
-    sta WSYNC
-    sta WSYNC
-
-    ; limpiamos el playfield
-    lda #$00    
-    sta PF1
+    lda INTIM
+    bne OverscanLoop
 
     rts
 .endproc
 
+    ; ----------------------------------------------------------------------
+    ; Data
+    ; ----------------------------------------------------------------------
     .SEGMENT "BSS"
 Color1: 
     .byte 0
 Color2: 
     .byte 0
 
+    ; ----------------------------------------------------------------------
+    ; Vectores de interrupcion
+    ; ----------------------------------------------------------------------
     .SEGMENT "VECTORS"
-    .word Reset          ; NMI
-    .word Reset          ; RESET
-    .word Reset          ; IRQ
+    .word Main          ; NMI
+    .word Main          ; RESET
+    .word Main          ; IRQ
 
