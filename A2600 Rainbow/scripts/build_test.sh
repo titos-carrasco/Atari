@@ -1,4 +1,4 @@
-DIR=obj
+DIR=build
 FILE=test
 CFG=/usr/share/cc65/cfg/atari2600.cfg
 

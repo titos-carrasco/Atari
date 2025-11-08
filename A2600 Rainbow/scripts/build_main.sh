@@ -1,4 +1,4 @@
-DIR=obj
+DIR=build
 FILE=main
 CFG=/usr/share/cc65/cfg/atari2600.cfg
 INC=/usr/share/cc65/asminc/atari2600.inc
