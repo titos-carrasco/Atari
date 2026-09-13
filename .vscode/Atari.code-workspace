@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"name": "/",
+			"path": ".."
+		},
+		{
+			"name": "Fujinet",
+			"path": "../FujiNet"
+		},
+	],
+	"settings": {}
+}
