@@ -12,6 +12,10 @@
 			"name": "A2600 Rainbow",
 			"path": "../A2600 Rainbow"
 		},
+		{
+			"name": "A800 Simple Animation",
+			"path": "../A800 Simple Animation"
+		},
 	],
 	"settings": {}
 }

@@ -1,0 +1,17 @@
+{
+    "configurations": [
+        {
+            "name": "Atari CC65",
+            "includePath": [
+                "${workspaceFolder}/src/**",
+                "E:/Software/cc65/include"
+            ],
+            "defines": [
+                "__ATARI__"
+            ],
+            "compilerPath": "",
+            "cStandard": "c89"
+        }
+    ],
+    "version": 4
+}
