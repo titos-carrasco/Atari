@@ -1,0 +1,9 @@
+CompileFlags:
+  Add:
+    - "-D__ATARI__=1"
+    - "-D__ATARI2600__=1"
+    - "-I/usr/share/cc65/include"
+    - "-std=c89"
+    - "-x"
+    - "c"
+    - "-nostdinc"

@@ -8,6 +8,10 @@
 			"name": "Fujinet",
 			"path": "../FujiNet"
 		},
+		{
+			"name": "A2600 Rainbow",
+			"path": "../A2600 Rainbow"
+		},
 	],
 	"settings": {}
 }

@@ -10,8 +10,7 @@ https://www.randomterrain.com/atari-2600-memories-tutorial-andrew-davie-07.html
 
 #include <atari2600.h>
 
-void show_numbers()
-{
+void show_numbers() {
     // debemos utilizar 37 scanlines
     unsigned char i;
 
@@ -59,16 +58,14 @@ void show_numbers()
     TIA.pf1 = 0b00000000;
 }
 
-void main()
-{
+int main() {
     unsigned char color1 = 0x30, color2 = 0x30, i = 0, n = 0;
 
     // comenzamos con el beam apagado y nos sincronizamos al inicio del frame
     TIA.vblank = 0b01000010;
     TIA.vsync = 0x02;
 
-    for (;;)
-    {
+    for (;;) {
         // ----------------------------------------------------------------------
         // sincronizacion de video (3 lineas)
         // cada instruccion detiene la cpu hasta el inicio de la siguiente linea
@@ -123,4 +120,6 @@ void main()
         // ----------------------------------------------------------------------
         TIA.vsync = 0x02;
     }
+
+    return 0;
 }
