@@ -2,9 +2,11 @@
 ifeq ($(OS),Windows_NT)
 CC65_BIN := E:/Software/cc65/bin
 CC65_INC := E:/Software/cc65/include
+STELLA   := E:/Software/Stella/Stella.exe
 else
 CC65_BIN := /usr/bin
 CC65_INC := /usr/share/cc65/include
+STELLA   := /usr/bin/stella
 endif
 
 MAKEFLAGS += --warn-undefined-variables
@@ -59,4 +61,4 @@ clean:
 	rm -f $(BUILD_DIR)/$(TARGET).*
 
 run: $(TARGET_EXE)
-	stella -format ntsc $(TARGET_EXE)
+	$(STELLA) -format ntsc $(TARGET_EXE)
